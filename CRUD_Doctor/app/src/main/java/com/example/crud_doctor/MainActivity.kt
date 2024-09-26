@@ -97,18 +97,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun agregarDoctor() {
         val nombre = txtNombre.text.toString().trim()
-        val edad = txtEdad.text.toString().toIntOrNull()
-        val peso = txtPeso.text.toString().toDoubleOrNull()
+        val edadStr = txtEdad.text.toString().trim()
+        val pesoStr = txtPeso.text.toString().trim()
         val correo = txtCorreo.text.toString().trim()
 
+        // Validaciones
         if (nombre.isEmpty()) {
             showToast("El nombre es obligatorio")
             return
         }
 
+        if (edadStr.isEmpty() || edadStr.toIntOrNull() == null) {
+            showToast("La edad debe ser un número válido")
+            return
+        }
+
+        // No se valida el peso, se asignará un valor por defecto si está vacío
         btnAgregar.isEnabled = false // Deshabilitar el botón
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -117,8 +123,8 @@ class MainActivity : AppCompatActivity() {
                 connection?.prepareStatement(sql)?.apply {
                     setString(1, UUID.randomUUID().toString())
                     setString(2, nombre)
-                    setInt(3, edad ?: 0)
-                    setDouble(4, peso ?: 0.0)
+                    setInt(3, edadStr.toInt()) // Convertir directamente a Int
+                    setDouble(4, if (pesoStr.isNotEmpty()) pesoStr.toDouble() else 0.0) // Asignar 0.0 si está vacío
                     setString(5, correo)
                     executeUpdate()
                     connection?.commit()
@@ -143,7 +149,8 @@ class MainActivity : AppCompatActivity() {
         val uuid = txtUUID.text.toString().trim()
         val nombre = txtNombre.text.toString().trim()
         val edad = txtEdad.text.toString().toIntOrNull()
-        val peso = txtPeso.text.toString().toDoubleOrNull()
+        val pesoStr = txtPeso.text.toString().trim()
+        val peso = if (pesoStr.isNotEmpty()) pesoStr.toDouble() else null // Asignar null si está vacío
         val correo = txtCorreo.text.toString().trim()
 
         if (uuid.isEmpty()) {
@@ -157,7 +164,8 @@ class MainActivity : AppCompatActivity() {
                 connection?.prepareStatement(sql)?.apply {
                     setString(1, if (nombre.isNotEmpty()) nombre else null)
                     setInt(2, edad ?: 0)
-                    setDouble(3, peso ?: 0.0)
+                    // Si el peso es null, se puede manejar según la lógica de tu base de datos
+                    setDouble(3, peso ?: 0.0) // Asignar 0.0 si el peso es null
                     setString(4, if (correo.isNotEmpty()) correo else null)
                     setString(5, uuid)
                     val rowsUpdated = executeUpdate()
