@@ -43,7 +43,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation("com.oracle.database.jdbc:ojdbc8:19.8.0.0")
+    implementation("com.oracle.database.jdbc:ojdbc6:11.2.0.4")
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(files("libs\\jtds-1.3.1.jar"))
